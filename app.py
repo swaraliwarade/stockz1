@@ -40,188 +40,96 @@ st.set_page_config(
 #      - Style "dashboard cards" with rounded borders & subtle gradient tops
 #      - Style pattern badges, section headings, and the explanation box
 # ════════════════════════════════════════════════════════════════════════════
+# Add this AT THE TOP of app.py (after st.set_page_config)
 st.markdown("""
 <style>
-/* ── Google Font (Inter — clean, modern, finance-friendly) ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-/* ── Base background & text ── */
-html, body, [data-testid="stAppViewContainer"] {
-    font-family: 'Inter', sans-serif;
-    background-color: #0b0f19;
-    color: #d1d5db;
+""" + open("global.css").read() + """
+/* Landing page additions */
+.landing-container {
+    padding: 140px 40px 80px;
+    text-align: center;
+    min-height: 100vh;
 }
-
-/* ── Sidebar ── */
-[data-testid="stSidebar"] {
-    background-color: #0f1623;
-    border-right: 1px solid #1e2d40;
-}
-[data-testid="stSidebar"] * { color: #9ca3af; }
-[data-testid="stSidebar"] h2 { color: #f9fafb !important; }
-
-/* ── Main content padding ── */
-[data-testid="block-container"] {
-    padding: 2rem 2.5rem 3rem 2.5rem;
-}
-
-/* ── Dashboard header ── */
-.dash-header {
-    padding: 1.5rem 0 1rem 0;
-    border-bottom: 1px solid #1e2d40;
-    margin-bottom: 1.5rem;
-}
-.dash-header h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #f9fafb;
-    margin: 0 0 0.3rem 0;
-}
-.dash-header p {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin: 0;
-}
-
-/* ── Stock title & subtitle ── */
-.stock-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #f9fafb;
-    margin-bottom: 0.1rem;
-}
-.stock-sub {
-    font-size: 0.8rem;
-    color: #6b7280;
-    margin-bottom: 1.25rem;
-}
-
-/* ══ DASHBOARD METRIC CARDS ══
-   These give the "rounded card with darker background" look requested.
-   The ::before pseudo-element adds a coloured top border stripe.        */
-.metric-card {
-    background: #111827;
-    border: 1px solid #1e2d40;
-    border-radius: 10px;
-    padding: 1.1rem 1.25rem;
-    position: relative;
-    overflow: hidden;
-}
-/* Default top stripe — blue */
-.metric-card::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #2563eb, #0ea5e9);
-    border-radius: 10px 10px 0 0;
-}
-/* Coloured stripe variants */
-.metric-card.bullish-card::before { background: linear-gradient(90deg, #059669, #34d399); }
-.metric-card.bearish-card::before { background: linear-gradient(90deg, #dc2626, #f87171); }
-.metric-card.neutral-card::before { background: linear-gradient(90deg, #b45309, #fbbf24); }
-
-.metric-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #6b7280;
-    margin-bottom: 0.5rem;
-}
-.metric-value {
-    font-size: 1.65rem;
-    font-weight: 700;
-    color: #f9fafb;
+.stockz-h1 {
+    font-size: 4.5rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #2563eb, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2rem;
     line-height: 1.1;
 }
-.metric-sub {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 0.35rem;
+.hero-text {
+    font-size: 1.3rem;
+    max-width: 700px;
+    margin: 0 auto 3.5rem;
+    line-height: 1.7;
 }
-
-/* ── Colour helpers ── */
-.bullish { color: #34d399; }
-.bearish { color: #f87171; }
-.neutral { color: #fbbf24; }
-
-/* ── Section headings (divider labels) ── */
-.section-heading {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #4b5563;
-    margin: 1.75rem 0 0.75rem 0;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid #1e2d40;
-}
-
-/* ── Pattern badges (pill-shaped coloured labels) ── */
-.badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.25rem; }
-.pattern-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 14px;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 600;
-}
-.badge-bullish { background: #052e16; color: #34d399; border: 1px solid #065f46; }
-.badge-bearish { background: #2d0a0a; color: #f87171; border: 1px solid #7f1d1d; }
-.badge-neutral { background: #1c1408; color: #fbbf24; border: 1px solid #78350f; }
-.badge-none    { color: #4b5563; font-size: 0.85rem; font-style: italic; }
-
-/* ── AI explanation box ── */
-.explanation-box {
-    background: #111827;
-    border: 1px solid #1e2d40;
-    border-left: 3px solid #2563eb;
-    border-radius: 0 8px 8px 0;
-    padding: 1rem 1.25rem;
-    font-size: 0.85rem;
-    line-height: 1.75;
-    white-space: pre-wrap;
-    color: #d1d5db;
-}
-
-/* ── Expander styling ── */
-div[data-testid="stExpander"] {
-    background: #111827;
-    border: 1px solid #1e2d40 !important;
-    border-radius: 8px;
-}
-
-/* ── Analyse button ── */
-.stButton > button {
-    background: #1d4ed8;
-    color: #fff;
+.cta-main {
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    color: white !important;
+    padding: 18px 40px;
+    border-radius: 16px;
+    font-size: 1.2rem;
+    font-weight: 700;
     border: none;
-    border-radius: 7px;
-    font-weight: 600;
-    font-size: 0.875rem;
-    padding: 0.55rem 1.5rem;
+    display: inline-block;
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+}
+.cta-main:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(37, 99, 235, 0.4);
+}
+.navbar-fixed {
+    position: fixed;
+    top: 0;
     width: 100%;
-    transition: background 0.15s;
+    background: rgba(11, 15, 25, 0.98);
+    backdrop-filter: blur(20px);
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    border-bottom: 1px solid #1e293b;
 }
-.stButton > button:hover { background: #2563eb; }
-
-/* ── Footer ── */
-.dash-footer {
-    font-size: 0.75rem;
-    color: #374151;
-    text-align: center;
-    padding-top: 1.5rem;
-    border-top: 1px solid #1e2d40;
-    margin-top: 2rem;
-}
-
-/* ── Streamlit heading overrides ── */
-h1, h2, h3, h4 { color: #f9fafb !important; }
+.nav-links { color: #94a3b8; font-weight: 500; }
+.stockz-nav { font-size: 2.2rem; font-weight: 800; }
+.auth-links { color: #94a3b8; }
 </style>
 """, unsafe_allow_html=True)
+
+
+# Landing page - show first
+if 'show_dashboard' not in st.session_state:
+    st.session_state.show_dashboard = False
+
+if not st.session_state.show_dashboard:
+    st.markdown("""
+    <div class="navbar-fixed">
+        <div class="nav-links">News | Features</div>
+        <div class="stockz-nav">𝗦𝗧𝗢𝗖𝗞𝗭</div>
+        <div class="auth-links">About | Login | Sign Up</div>
+    </div>
+    
+    <div class="landing-container">
+        <h1 class="stockz-h1">What is Stockz?</h1>
+        <p class="hero-text">
+            A simple and easy to understand app made by students to aid beginners 
+            get into the world of trading and stock markets.
+        </p>
+        <button class="cta-main" onclick="parent.streamlit.setComponentValue({show_dashboard: true})">
+            Start Learning →
+        </button>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("Skip to Dashboard"):  # Fallback button
+        st.session_state.show_dashboard = True
+        st.rerun()
+    st.stop()
+
 
 
 # ════════════════════════════════════════════════════════════════════════════
